@@ -6,14 +6,14 @@
         <button type="button"
                     class="close"
                     ng-click="$hide()"><i class="fa fa-times"></i></button>
-        <h4 class="modal-title">Add Your Look</h4>
+        <h4 class="modal-title">Add Your Course</h4>
       </div>
 
   <div class="modal-body"
           ng-show="scrapePostForm">
     <form ng-submit="addScrapePost()"
               style="margin-top:30px">
-      <h3>Find a Look</h3>
+      <h3>Find a Course</h3>
       <div class="form-group">
         <input type="text"
                   class="form-control"
@@ -23,7 +23,7 @@
       <div class="form-group">
         <input type="text"
                   class="form-control"
-                  placeholder="Link URL  (Pinterest)"
+                  placeholder="Link URL  (Udemy)"
                   ng-model="look.link"
                   ng-disabled="gotScrapeResults">
       </div>

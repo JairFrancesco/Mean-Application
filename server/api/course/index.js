@@ -1,6 +1,6 @@
 'use strict'
 
-var controller = require('./look.controller')
+var controller = require('./course.controller')
 var express = require('express');
 var router = express.Router();
 
