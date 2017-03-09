@@ -3,7 +3,7 @@
 var scrapers = {};
 
 scrapers['pinterest'] = require('./scrapers/pinterest.js');
-scrapers['instagram'] = require('./scrapers/instagram.js');
+//scrapers['instagram'] = require('./scrapers/instagram.js');
 
 exports.scrape = function(req, res){
 	var url = req.body.url;
