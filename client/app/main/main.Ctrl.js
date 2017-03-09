@@ -10,7 +10,7 @@
   function MainCtrl($scope, $state, Auth, $modal, $http) {
     $scope.user = Auth.getCurrentUser();
 
-    $scope.look = {};
+    $scope.course = {};
 
     $scope.scrapePostForm = true;
     $scope.uploadLookTitle = true;
@@ -30,25 +30,25 @@
 
    	//Watch for changes to URL, Scrape and Display Results
 	
-	$scope.$watch('look.link', function(newVal, oldVal){
+	$scope.$watch('course.link', function(newVal, oldVal){
 		if (newVal.length > 5) {
 			$scope.loading = true;
 		}
 		$http.post('/api/links/scrape', {
-			url: $scope.look.link
+			url: $scope.course.link
 		})
 		.then(function(data){
 			console.log(data);
 			$scope.showScrapeDetails = true;
 			$scope.gotScrapeResults = true;
 			$scope.uploadLookTitle = false;
-			$scope.look.imgThumb = data.data.img;
-			$scope.look.description = data.data.desc;
+			$scope.course.imgThumb = data.data.img;
+			$scope.course.description = data.data.desc;
 		})
 		.catch(function(data){
 			console.log('failed to return from scrape');
 			$scope.loading = false;
-			$scope.look.link = '';
+			$scope.course.link = '';
 			$scope.gotScrapeResults = false;
 		})
 		.finally(function(){
@@ -56,5 +56,30 @@
 			$scope.uploadLookForm = false;
 		});
 	});
+
+	$scope.addScrapePost = function(){
+		var course = {
+			description : $scope.course.description,
+			title: $scope.course.title,
+			image: $scope.course.imgThumb,
+			linkURL: $scope.course.link,
+			email: $scope.user.email,
+			name: $scope.user.name,
+			_creator: $scope.user._id
+		}
+
+		$http.post('/api/course/scrapeUpload', course)
+		 .then(function(data){
+		 	$scope.showScrapeDetails = false,
+		 	$scope.gotScrapeResults = false,
+		 	$scope.course.title = '',
+		 	$scope.course.link = '',
+		 	console.log(data);
+		 })
+		 .catch(function(){
+		 	console.log('failed to post');
+		 	$scope.showScrapeDetails = false;
+		 });
+	}
   }
 })();

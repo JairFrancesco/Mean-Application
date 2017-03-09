@@ -18,13 +18,13 @@
         <input type="text"
                   class="form-control"
                   placeholder="Title"
-                  ng-model="look.title">
+                  ng-model="course.title">
       </div>
       <div class="form-group">
         <input type="text"
                   class="form-control"
                   placeholder="Link URL  (Udemy)"
-                  ng-model="look.link"
+                  ng-model="course.link"
                   ng-disabled="gotScrapeResults">
       </div>
 
@@ -43,13 +43,13 @@
                       class="col-xs-12">Description</label></div>
             <textarea class="form-control"
                            rows="3"
-                           ng-model="look.description">
+                           ng-model="course.description">
                     </textarea>
               </div>
 
            <div class="form-group">
              <div class="listing-image">
-                <img src="{{look.imgThumb}}"
+                <img src="{{course.imgThumb}}"
                         class="img img-thumbnail img-responsive">
               </div>
              </div>
