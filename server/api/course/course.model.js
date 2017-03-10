@@ -3,7 +3,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var LookSchema = new Schema({
+var CourseSchema = new Schema({
 	image: String,
 	linkURL: String, 
 	title: String,
@@ -31,5 +31,5 @@ var LookSchema = new Schema({
 	}
 });
 
-module.exports = mongoose.model('Look', LookSchema);
+module.exports = mongoose.model('Course', CourseSchema);
 

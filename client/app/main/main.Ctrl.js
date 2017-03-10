@@ -11,7 +11,7 @@
     $scope.user = Auth.getCurrentUser();
 
     $scope.course = {};
-
+    $scope.courses = [];
     $scope.scrapePostForm = true;
     $scope.uploadLookTitle = true;
     $scope.uploadLookForm = false;
@@ -45,6 +45,16 @@
    	$scope.showModal = function(){
    		myModal.$promise.then(myModal.show);
    	}
+
+   	coursesAPI.getAllCourses()
+   	 .then(function(data){
+   	 	console.log(data);
+   	 	$scope.courses = data.data;
+   	 })
+   	 .catch(function(err){
+   	 	console.log('failed to get courses' + err);
+   	 })
+
 
    	//Watch for changes to URL, Scrape and Display Results
 	
@@ -95,7 +105,7 @@
 		 	$scope.gotScrapeResults = false;
 		 	$scope.course.title = '';
 		 	$scope.course.link = '';
-		 	$scope.course.splice(0,0,data.data);
+		 	$scope.courses.splice(0,0,data.data);
 		 	console.log(data);
 		 })
 		 .catch(function(){

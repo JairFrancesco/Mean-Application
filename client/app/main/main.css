@@ -2,11 +2,11 @@
   max-height: 300px;
   max-width: 300px;
 }
-.lookLink {
+.courseLink {
   color: #000;
   text-decoration: none;
 }
-.lookLink:hover {
+.courseLink:hover {
   text-decoration: none;
   color: #000;
 }
@@ -22,7 +22,7 @@
   display: inline;
   width: 70%;
 }
-.add-look-btn {
+.add-course-btn {
   margin-left: 20px;
 }
 #searchFilterWrap {

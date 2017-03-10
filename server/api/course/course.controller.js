@@ -5,10 +5,28 @@ var Course = require('./course.model');
 var path = require('path');
 var utils = require('../../utils/utils.js');
 
+exports.allCourses = function(req, res){
+	Course.find({})
+	 .sort({
+	 	createTime:-1
+	 })
+	 .exec(function(err, courses){
+	 	if (err) {
+	 		return handleError(res, err);
+	 	}
+	 	if (!courses){
+	 		return res.send(404);
+	 	}
+	 	console.log(courses);
+	 	return res.status(200)
+	 	 .json(courses);
+	 })
+}
+
 exports.scrapeUpload = function(req, res) {
   var random = utils.randomizer(32, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
 
-  utils.downloadURI(req.body.image, 'client/assets/images/uploads/' + random + '.png', function(filename) {
+  utils.downloadURI(req.body.image, '../client/assets/images/uploads/' + random + '.png', function(filename) {
     console.log('done');
 
     var newCourse = new Course();
@@ -32,4 +50,9 @@ exports.scrapeUpload = function(req, res) {
       }
     });
   });
+}
+
+
+function handleError(res, err){
+	return res.send(500, err);
 }
