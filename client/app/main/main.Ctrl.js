@@ -5,9 +5,9 @@
     .module('app')
     .controller('MainCtrl', MainCtrl);
 
-  MainCtrl.$inject = ['$scope', '$state', 'Auth', '$modal', '$http'];
+  MainCtrl.$inject = ['$scope', '$state', 'Auth', '$modal', 'coursesAPI', 'scrapeAPI', '$alert'];
 
-  function MainCtrl($scope, $state, Auth, $modal, $http) {
+  function MainCtrl($scope, $state, Auth, $modal, coursesAPI, scrapeAPI, $alert) {
     $scope.user = Auth.getCurrentUser();
 
     $scope.course = {};
@@ -18,6 +18,24 @@
    	$scope.showScrapeDetails = false;
    	$scope.gotScrapeResults = false;
    	$scope.loading = false;
+
+   	var alertSuccess = $alert({
+        title: 'Success! ',
+        content: 'New Course added',
+        placement: 'top-right',
+        container: '#alertContainer',
+        type: 'success',
+        duration: 8
+    });
+
+    var alertFail = $alert({
+        title: 'Not saved ',
+        content: 'New Course failed to save',
+        placement: 'top-right',
+        container: '#alertContainer',
+        type: 'warning',
+        duration: 8
+    });
 
    	var myModal = $modal({
    		scope: $scope,
@@ -34,9 +52,12 @@
 		if (newVal.length > 5) {
 			$scope.loading = true;
 		}
-		$http.post('/api/links/scrape', {
+
+		var link = {
 			url: $scope.course.link
-		})
+		}
+
+		scrapeAPI.getScrapeDetails(link)
 		.then(function(data){
 			console.log(data);
 			$scope.showScrapeDetails = true;
@@ -68,16 +89,18 @@
 			_creator: $scope.user._id
 		}
 
-		$http.post('/api/course/scrapeUpload', course)
+		coursesAPI.createScrapeCourse(course)
 		 .then(function(data){
-		 	$scope.showScrapeDetails = false,
-		 	$scope.gotScrapeResults = false,
-		 	$scope.course.title = '',
-		 	$scope.course.link = '',
+		 	$scope.showScrapeDetails = false;
+		 	$scope.gotScrapeResults = false;
+		 	$scope.course.title = '';
+		 	$scope.course.link = '';
+		 	$scope.course.splice(0,0,data.data);
 		 	console.log(data);
 		 })
 		 .catch(function(){
 		 	console.log('failed to post');
+		 	alertFail.show();
 		 	$scope.showScrapeDetails = false;
 		 });
 	}
