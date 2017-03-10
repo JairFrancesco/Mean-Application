@@ -5,19 +5,21 @@
     .module('app')
     .controller('MainCtrl', MainCtrl);
 
-  MainCtrl.$inject = ['$scope', '$state', 'Auth', '$modal', 'coursesAPI', 'scrapeAPI', '$alert'];
+  MainCtrl.$inject = ['$scope', '$state', 'Auth', '$modal', 'coursesAPI', 'scrapeAPI', '$alert', 'Upload'];
 
-  function MainCtrl($scope, $state, Auth, $modal, coursesAPI, scrapeAPI, $alert) {
+  function MainCtrl($scope, $state, Auth, $modal, coursesAPI, scrapeAPI, $alert, Upload) {
     $scope.user = Auth.getCurrentUser();
 
     $scope.course = {};
     $scope.courses = [];
     $scope.scrapePostForm = true;
-    $scope.uploadLookTitle = true;
-    $scope.uploadLookForm = false;
    	$scope.showScrapeDetails = false;
    	$scope.gotScrapeResults = false;
    	$scope.loading = false;
+
+   	$scope.picPreview = true;
+   	$scope.uploadCourseTitle = true;
+    $scope.uploadCourseForm = false;
 
    	var alertSuccess = $alert({
         title: 'Success! ',
@@ -46,6 +48,12 @@
    		myModal.$promise.then(myModal.show);
    	}
 
+   	$scope.showUploadForm = function(){
+   		$scope.uploadCourseForm = true;
+   		$scope.scrapePostForm = false;
+   		$scope.uploadCourseTitle = false;
+   	}
+
    	coursesAPI.getAllCourses()
    	 .then(function(data){
    	 	console.log(data);
@@ -72,7 +80,7 @@
 			console.log(data);
 			$scope.showScrapeDetails = true;
 			$scope.gotScrapeResults = true;
-			$scope.uploadLookTitle = false;
+			$scope.uploadCourseTitle = false;
 			$scope.course.imgThumb = data.data.img;
 			$scope.course.description = data.data.desc;
 		})
@@ -84,7 +92,7 @@
 		})
 		.finally(function(){
 			$scope.loading = false;
-			$scope.uploadLookForm = false;
+			$scope.uploadCourseForm = false;
 		});
 	});
 
@@ -114,5 +122,37 @@
 		 	$scope.showScrapeDetails = false;
 		 });
 	}
+
+	$scope.uploadPic = function(file){
+		Upload.upload({
+			url: 'api/courses/upload',
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			},
+			data: {
+				file: file,
+				title: $scope.course.title,
+				description: $scope.course.description,
+				email: $scope.user.email,
+				name: $scope.user.name,
+				linkURL: $scope.course._id,
+				_creator: $scope.user._id
+			}
+		})
+		 .then(function(resp){
+		 	console.log('successfull upload');
+		 	$scope.courses.splice(0,0, resp.data);
+		 	$scope.course.title = '';
+		 	$scope.course.description = '';
+		 	$scope.picFile = '',
+		 	$scope.picPreview = false;
+		 	alertSuccess.show();
+		 }, function(resp){
+		 	alertFail.show();
+		 }, function(evt){
+		 	var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+		 	console.log('progress' + progressPercentage + '%' + evt.config.data.file.name);
+		 });
+	}
   }
-})();
+})(); 
